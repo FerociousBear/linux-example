@@ -16,6 +16,26 @@
 * =====================================================================================
 */
 #include "so_test.h"
+static  __attribute__((constructor(101))) void initA()
+{
+	printf("%s\n",__func__);
+}
+
+static  __attribute__((destructor(101))) void exitA()
+{
+	printf("%s\n",__func__);
+}
+
+static  __attribute__((constructor(102))) void initB()
+{
+	printf("%s\n",__func__);
+}
+
+static  __attribute__((destructor(102))) void exitB()
+{
+	printf("%s\n",__func__);
+}
+
 int main()
 {
 	test_a();

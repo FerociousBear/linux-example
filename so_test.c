@@ -16,6 +16,15 @@
  * =====================================================================================
  */
 #include "so_test.h"
+static  __attribute__((constructor)) void so_init()
+{
+	printf("%s\n",__func__);
+}
+
+static  __attribute__((destructor)) void so_exit()
+{
+	printf("%s\n",__func__);
+}
 
 void test_a()
 {
