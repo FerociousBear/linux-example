@@ -15,6 +15,7 @@
 *
 * =====================================================================================
 */
+#include <dlfcn.h>
 #include "so_test.h"
 static  __attribute__((constructor(101))) void initA()
 {
@@ -38,8 +39,21 @@ static  __attribute__((destructor(102))) void exitB()
 
 int main()
 {
-	test_a();
-	test_b();
-	test_c();
+	const char* path = "libtest.so";
+	void (*func)();
+	void* handle = dlopen(path, RTLD_NOW);
+	if (handle == NULL)
+	{
+		fprintf(stderr, "Failed to open libaray %s error:%s\n", path, dlerror());
+		return -1;
+	}
+
+	func = dlsym(handle, "test_a");
+	func();
+	func = dlsym(handle, "test_b");
+	func();
+	func = dlsym(handle, "test_c");
+	func();
+	//dlclose(handle);
 	return 0; 
 }
