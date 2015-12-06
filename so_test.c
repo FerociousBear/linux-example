@@ -15,7 +15,11 @@
  *
  * =====================================================================================
  */
+#include <pthread.h>
 #include "so_test.h"
+int gSec;
+pthread_t id_a;
+
 static  __attribute__((constructor)) void so_init()
 {
 	printf("%s\n",__func__);
@@ -23,12 +27,29 @@ static  __attribute__((constructor)) void so_init()
 
 static  __attribute__((destructor)) void so_exit()
 {
-	printf("%s\n",__func__);
+	printf("%s l:%d\n",__func__,__LINE__);
+	//pthread_exit(0);
+	pthread_join(id_a,NULL);
+	printf("%s l:%d\n",__func__,__LINE__);
+}
+
+void* thread(void* data)
+{
+	int sec = *(int*)data;
+	printf("%s l:%d\n",__func__,__LINE__);
+	sleep(sec);
+	printf("%s l:%d\n",__func__,__LINE__);
 }
 
 void test_a()
 {
 	printf("this is in test_a...\n");
+	int ret;
+	gSec = 4;
+	ret=pthread_create(&id_a,NULL,thread,&gSec);
+	if(ret!=0){
+		printf ("Create pthread error!\n");
+	}
 } 
 
 void test_b()
